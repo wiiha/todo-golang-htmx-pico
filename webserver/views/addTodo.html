@@ -1,0 +1,8 @@
+{{ define "addTodo"}}
+<section hx-ext="reset-on-success">
+  <form hx-post="/todo" hx-target="#todoList" hx-swap="beforeend" hx-reset-on-success>
+    <input type="text" name="what" placeholder="what to do?" />
+    <button type="submit">add</button>
+  </form>
+</section>
+{{ end}}
