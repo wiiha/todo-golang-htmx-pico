@@ -2,13 +2,16 @@ package webserver
 
 import (
 	"log"
-	"net/http"
+	"try-htmx/todo"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/labstack/echo/v4"
 )
 
 func Start() {
+
+	todoSvc := todo.NewTodoSVC()
+	handlers := NewHandlerSvc(todoSvc)
 
 	t := NewTemplater("webserver/views")
 	watcher, err := fsnotify.NewWatcher()
@@ -46,30 +49,11 @@ func Start() {
 	}
 
 	e.Static("/static", "webserver/static")
-	e.POST("/todo", addTodo)
-	e.GET("/", func(c echo.Context) error {
-		items := []*todoItem{
-			{
-				ID:   1,
-				What: "check me!",
-				Done: false,
-			},
-			{
-				ID:   2,
-				What: "and me!",
-				Done: false,
-			},
-			{
-				ID:   3,
-				What: "I am already done!",
-				Done: true,
-			},
-		}
-		return c.Render(http.StatusOK, "index.html", IndexPageData{Todos: items})
-	})
+	e.POST("/todo", handlers.addTodo)
+	e.GET("/", handlers.listTodos)
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 type IndexPageData struct {
-	Todos []*todoItem
+	Todos []*todo.TodoItem
 }

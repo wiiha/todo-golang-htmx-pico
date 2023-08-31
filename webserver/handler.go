@@ -1,25 +1,30 @@
 package webserver
 
 import (
-	"log"
 	"net/http"
+	"try-htmx/todo"
 
 	"github.com/labstack/echo/v4"
 )
 
-type todoItem struct {
-	ID   int    `form:"id"`
-	What string `form:"what"`
-	Done bool   `form:"done"`
+type handlerSvc struct {
+	todoSvc *todo.TodoSVC
 }
 
-func (t *todoItem) Valid() bool {
-	return t.What != ""
+func NewHandlerSvc(todoSvc *todo.TodoSVC) *handlerSvc {
+	return &handlerSvc{
+		todoSvc: todoSvc,
+	}
 }
 
-func addTodo(c echo.Context) error {
+func (h *handlerSvc) listTodos(c echo.Context) error {
+	ts := h.todoSvc.List()
+	return c.Render(http.StatusOK, "index.html", IndexPageData{Todos: ts})
+}
 
-	t := new(todoItem)
+func (h *handlerSvc) addTodo(c echo.Context) error {
+
+	t := new(todo.TodoItem)
 	if err := c.Bind(t); err != nil {
 		return err
 	}
@@ -28,7 +33,15 @@ func addTodo(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	log.Printf("adding item: %+v", t)
+	// We only care about "what" prop
+
+	id, err := h.todoSvc.Add(t.What)
+	if err != nil {
+		c.Logger().Errorf("adding item: %v", err)
+		return echo.ErrInternalServerError
+	}
+
+	t.ID = id
 
 	return c.Render(http.StatusOK, "todoItem", t)
 }

@@ -3,7 +3,7 @@
   <ul id="todoList">
     {{ range .Todos}}
       {{block "todoItem" .}}
-        <li id="{{printf "item-%d" .ID}}">
+        <li id="{{printf "%s" .ID}}">
           {{if .Done}}
             <s>{{.What}}</s>
           {{else}}
