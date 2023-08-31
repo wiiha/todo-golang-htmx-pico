@@ -20,7 +20,11 @@ func (t TodoItems) Len() int {
 }
 
 func (t TodoItems) Less(i, j int) bool {
-	return t[i].ID < t[j].ID
+	if t[i].Done == t[j].Done {
+		return t[i].ID < t[j].ID
+	}
+
+	return t[j].Done
 }
 
 func (t TodoItems) Swap(i, j int) {
@@ -93,6 +97,21 @@ func (svc *TodoSVC) add(t *TodoItem) (string, error) {
 func (svc *TodoSVC) Add(what string) (string, error) {
 
 	return svc.add(NewTodoItem(what))
+
+}
+
+func (svc *TodoSVC) Update(nt *TodoItem) error {
+	svc.Lock()
+	defer svc.Unlock()
+
+	ot, ok := svc.todos[nt.ID]
+	if !ok {
+		return fmt.Errorf("no item with id %s", nt.ID)
+	}
+
+	ot.What = nt.What
+
+	return nil
 
 }
 

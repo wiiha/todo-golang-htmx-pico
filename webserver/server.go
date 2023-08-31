@@ -50,6 +50,10 @@ func Start() {
 
 	e.Static("/static", "webserver/static")
 	e.POST("/todo", handlers.addTodo)
+	e.GET("/todo/:id", handlers.getTodo)
+	e.PUT("/todo/:id", handlers.updateTodo)
+	e.GET("/done/:id", handlers.todoDone)
+	e.GET("/edit/:id", handlers.editTodo)
 	e.GET("/", handlers.listTodos)
 	e.Logger.Fatal(e.Start(":1323"))
 }

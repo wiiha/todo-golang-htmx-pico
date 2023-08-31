@@ -1,0 +1,9 @@
+{{block "editTodo" .}}
+<li>
+  <form hx-put="/todo/{{.ID}}" hx-target="this" hx-swap="outerHTML">
+    <input name="what" type="text" value="{{.What}}" />
+    <button class="btn">Save</button>
+    <button class="btn" hx-get="/todo/{{.ID}}">Cancel</button>
+  </form>
+</li>
+{{end}}
