@@ -26,11 +26,12 @@ func Start() {
 		for {
 			select {
 			case event := <-watcher.Events:
-				log.Println("Event:", event)
+				// log.Println("Event:", event)
 				// Check if the event is a write event
 				if event.Has(fsnotify.Chmod) {
 					continue
 				}
+				log.Println("Reloading renderer")
 				t := NewTemplater("webserver/views")
 				e.Renderer = t
 			case err := <-watcher.Errors:
