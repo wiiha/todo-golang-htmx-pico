@@ -52,6 +52,7 @@ func Start() {
 	e.POST("/todo", handlers.addTodo)
 	e.GET("/todo/:id", handlers.getTodo)
 	e.PUT("/todo/:id", handlers.updateTodo)
+	e.DELETE("/todo/:id", handlers.deleteTodo)
 	e.GET("/done/:id", handlers.todoDone)
 	e.GET("/edit/:id", handlers.editTodo)
 	e.GET("/", handlers.listTodos)

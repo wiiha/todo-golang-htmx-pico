@@ -67,6 +67,9 @@ func (h *handlerSvc) updateTodo(c echo.Context) error {
 	if err := c.Bind(r); err != nil {
 		return err
 	}
+	if r.What == "" {
+		return echo.ErrBadRequest
+	}
 
 	tid := c.Param("id")
 
@@ -106,4 +109,14 @@ func (h *handlerSvc) editTodo(c echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "editTodo", t)
+}
+
+func (h *handlerSvc) deleteTodo(c echo.Context) error {
+	tid := c.Param("id")
+
+	if err := h.todoSvc.Delete(tid); err != nil {
+		return echo.ErrBadRequest
+	}
+
+	return c.NoContent(http.StatusOK)
 }

@@ -81,6 +81,19 @@ func (svc *TodoSVC) Get(id string) (*TodoItem, error) {
 
 }
 
+func (svc *TodoSVC) Delete(id string) error {
+	svc.Lock()
+	defer svc.Unlock()
+
+	if _, ok := svc.todos[id]; !ok {
+		return fmt.Errorf("no item for %s", id)
+	}
+
+	delete(svc.todos, id)
+
+	return nil
+}
+
 func (svc *TodoSVC) add(t *TodoItem) (string, error) {
 	if !t.Valid() {
 		return "", fmt.Errorf("todo item is not valid")

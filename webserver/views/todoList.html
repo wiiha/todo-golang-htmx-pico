@@ -1,10 +1,16 @@
 {{ define "todoList"}}
+<style>
+ ul#todoList > li.htmx-swapping {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+</style>
 <section id="">
   <ul id="todoList">
     {{ range .Todos}} {{block "todoItem" .}} {{ $id := printf "%s" .ID}}
     <li id="{{$id}}" hx-target="this" hx-swap="outerHTML">
       {{if .Done}}
-      <s>{{.What}}</s>
+      <s>{{.What}}</s> (<a hx-delete="/todo/{{$id}}" hx-swap="outerHTML swap:0.4s">X</a>)
       {{else}} {{.What}} (<a
         hx-get="/done/{{$id}}"
         hx-trigger="click consume"
